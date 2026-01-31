@@ -1,6 +1,8 @@
 package com.example.bai2.service;
+
 import com.example.bai2.model.Book;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,20 +10,20 @@ import java.util.List;
 public class BookService {
 
     private List<Book> books = new ArrayList<>();
+    private int nextId = 1;
 
-    // Constructor
-    public BookService() {
-        books.add(new Book(1, "Dế Mèn Phiêu Lưu Ký", "Tô Hoài"));
-        books.add(new Book(2, "Tắt Đèn", "Ngô Tất Tố"));
-        books.add(new Book(3, "Lão Hạc", "Nam Cao"));
-    }
-
-    // Lấy tất cả sách
+    // Lấy danh sách sách
     public List<Book> getAllBooks() {
         return books;
     }
 
-    // Lấy sách theo ID
+    // Thêm sách mới
+    public void addBook(Book book) {
+        book.setId(nextId++);
+        books.add(book);
+    }
+
+    // Lấy sách theo id
     public Book getBookById(int id) {
         return books.stream()
                 .filter(book -> book.getId() == id)
@@ -29,15 +31,10 @@ public class BookService {
                 .orElse(null);
     }
 
-    // Thêm sách mới
-    public void addBook(Book book) {
-        books.add(book);
-    }
-
-    // Cập nhật thông tin sách theo ID
-    public void updateBook(int id, Book updatedBook) {
+    // Cập nhật sách
+    public void updateBook(Book updatedBook) {
         books.stream()
-                .filter(book -> book.getId() == id)
+                .filter(book -> book.getId() == updatedBook.getId())
                 .findFirst()
                 .ifPresent(book -> {
                     book.setTitle(updatedBook.getTitle());
@@ -45,7 +42,7 @@ public class BookService {
                 });
     }
 
-    // Xóa sách theo ID
+    // Xóa sách
     public void deleteBook(int id) {
         books.removeIf(book -> book.getId() == id);
     }
