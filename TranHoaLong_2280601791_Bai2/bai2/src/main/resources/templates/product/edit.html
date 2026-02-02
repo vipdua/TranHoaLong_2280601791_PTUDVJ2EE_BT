@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="fragment/_layout">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Product</title>
+</head>
+
+<body>
+
+<div layout:fragment="content" class="container">
+
+    <h2 class="mb-4">Edit Product</h2>
+
+    <form th:action="@{/products/edit}"
+          th:object="${product}"
+          method="post"
+          enctype="multipart/form-data">
+
+        <!-- Hidden ID -->
+        <input type="hidden" th:field="*{id}"/>
+
+        <!-- Name -->
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input class="form-control"
+                   type="text"
+                   th:field="*{name}"
+                   id="name"
+                   placeholder="Product name">
+
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('name')}"
+                 th:errors="*{name}">
+            </div>
+        </div>
+
+        <!-- Price -->
+        <div class="mb-3">
+            <label for="price" class="form-label">Price</label>
+            <input class="form-control"
+                   type="number"
+                   th:field="*{price}"
+                   id="price"
+                   placeholder="Price">
+
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('price')}"
+                 th:errors="*{price}">
+            </div>
+        </div>
+
+        <!-- Current Image -->
+        <div class="mb-3" th:if="${product.image != null}">
+            <label class="form-label">Current Image</label><br>
+            <img th:src="@{/images/{img}(img=${product.image})}"
+                 alt="Product Image"
+                 width="150"
+                 class="img-thumbnail">
+        </div>
+
+        <!-- Upload New Image -->
+        <div class="mb-3">
+            <label for="imageProduct" class="form-label">Change Image</label>
+            <input class="form-control"
+                   type="file"
+                   id="imageProduct"
+                   name="imageProduct"
+                   accept="image/png, image/jpeg">
+        </div>
+
+        <!-- Category -->
+        <div class="mb-3">
+            <label for="category" class="form-label">Category</label>
+            <select class="form-select"
+                    id="category"
+                    th:field="*{category.id}">
+                <option value="">-- Select category --</option>
+                <option th:each="c : ${categories}"
+                        th:value="${c.id}"
+                        th:text="${c.name}">
+                </option>
+            </select>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn btn-primary">
+            Update Product
+        </button>
+
+        <a th:href="@{/products}" class="btn btn-secondary ms-2">
+            Cancel
+        </a>
+
+    </form>
+
+</div>
+
+</body>
+</html>
