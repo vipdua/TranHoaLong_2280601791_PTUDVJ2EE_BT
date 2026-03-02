@@ -1,18 +1,14 @@
 package com.example.bai2.controller;
 
-import com.example.bai2.model.Category;
+import java.util.List;
 import com.example.bai2.model.Product;
 import com.example.bai2.service.CategoryService;
 import com.example.bai2.service.ProductService;
 
-import jakarta.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/products")
@@ -24,92 +20,42 @@ public class ProductController {
     @Autowired
     private CategoryService categoryService;
 
-    // Danh sách sản phẩm
+    // Hiển thị danh sách sản phẩm
     @GetMapping
-    public String index(Model model) {
-        model.addAttribute("listproduct", productService.getAll());
-        return "product/products";
+    public String listProducts(Model model) {
+        List<Product> productList = productService.getAllProducts();
+        model.addAttribute("products", productList);
+        return "product/products";   // đổi lại đúng tên file
     }
 
-    // Hiển thị form tạo sản phẩm
-    @GetMapping("/create")
-    public String create(Model model) {
-        Product product = new Product();
-        product.setCategory(new Category());
-
-        model.addAttribute("product", product);
-        model.addAttribute("categories", categoryService.getAll());
-        return "product/create";
+    // Hiển thị form thêm
+    @GetMapping("/add")
+    public String showAddForm(Model model) {
+        model.addAttribute("product", new Product());
+        model.addAttribute("categories", categoryService.getAllCategories());
+        return "product/create"; // templates/product/add.html
     }
 
-    // Xử lý tạo sản phẩm
-    @PostMapping("/create")
-    public String create(
-            @Valid @ModelAttribute("product") Product newProduct,
-            BindingResult result,
-            @RequestParam("category.id") int categoryId,
-            @RequestParam("imageProduct") MultipartFile imageProduct,
-            Model model
-    ) {
-
-        if (result.hasErrors()) {
-            model.addAttribute("categories", categoryService.getAll());
-            return "product/create";
-        }
-
-        // Upload ảnh
-        productService.updateImage(newProduct, imageProduct);
-
-        // Gán category
-        Category selectedCategory = categoryService.get(categoryId);
-        newProduct.setCategory(selectedCategory);
-
-        // Lưu sản phẩm
-        productService.add(newProduct);
-
+    // Lưu sản phẩm
+    @PostMapping("/save")
+    public String saveProduct(@ModelAttribute("product") Product product) {
+        productService.saveProduct(product);
         return "redirect:/products";
     }
 
-    // Hiển thị form chỉnh sửa
+    // Hiển thị form sửa
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable int id, Model model) {
-        Product found = productService.get(id);
-
-        if (found == null) {
-            return "error/404";
-        }
-
-        model.addAttribute("product", found);
-        model.addAttribute("categories", categoryService.getAll());
+    public String showEditForm(@PathVariable("id") Long id, Model model) {
+        Product product = productService.getProductById(id);
+        model.addAttribute("product", product);
+        model.addAttribute("categories", categoryService.getAllCategories());
         return "product/edit";
     }
 
-    // Xử lý cập nhật sản phẩm
-    @PostMapping("/edit")
-    public String edit(
-            @Valid @ModelAttribute("product") Product editProduct,
-            BindingResult result,
-            @RequestParam("imageProduct") MultipartFile imageProduct,
-            Model model
-    ) {
-
-        if (result.hasErrors()) {
-            model.addAttribute("categories", categoryService.getAll());
-            return "product/edit";
-        }
-
-        // Nếu có upload ảnh mới
-        if (imageProduct != null && !imageProduct.isEmpty()) {
-            productService.updateImage(editProduct, imageProduct);
-        }
-
-        productService.update(editProduct);
-        return "redirect:/products";
-    }
-
-    @PostMapping("/delete/{id}")
-    public String delete(@PathVariable int id) {
-        productService.delete(id);
+    // Xóa sản phẩm
+    @GetMapping("/delete/{id}")
+    public String deleteProduct(@PathVariable("id") Long id) {
+        productService.deleteProduct(id);
         return "redirect:/products";
     }
 }

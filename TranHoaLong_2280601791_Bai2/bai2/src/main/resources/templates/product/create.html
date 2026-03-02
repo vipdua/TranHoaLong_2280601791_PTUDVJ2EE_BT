@@ -15,10 +15,9 @@
 
     <h2 class="mb-4">Create Product</h2>
 
-    <form th:action="@{/products/create}"
+    <form th:action="@{/products/save}"
           th:object="${product}"
-          method="post"
-          enctype="multipart/form-data">
+          method="post">
 
         <!-- Name -->
         <div class="mb-3">
@@ -50,14 +49,19 @@
             </div>
         </div>
 
-        <!-- Image -->
+        <!-- Image (nhập tên file hoặc URL) -->
         <div class="mb-3">
-            <label for="imageProduct" class="form-label">Image</label>
+            <label for="image" class="form-label">Image (File name or URL)</label>
             <input class="form-control"
-                   type="file"
-                   id="imageProduct"
-                   name="imageProduct"
-                   accept="image/png, image/jpeg">
+                   type="text"
+                   th:field="*{image}"
+                   id="image"
+                   placeholder="example.jpg or https://...">
+
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('image')}"
+                 th:errors="*{image}">
+            </div>
         </div>
 
         <!-- Category -->
