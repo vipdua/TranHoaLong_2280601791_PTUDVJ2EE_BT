@@ -20,6 +20,10 @@
         </a>
     </div>
 
+    <div th:if="${error}" class="alert alert-danger">
+        <span th:text="${error}"></span>
+    </div>
+
     <table class="table table-striped table-bordered align-middle">
         <thead class="table-dark">
         <tr>

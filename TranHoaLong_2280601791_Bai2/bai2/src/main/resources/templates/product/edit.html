@@ -56,7 +56,7 @@
         <div class="mb-3"
              th:if="${product.image != null and product.image != ''}">
             <label class="form-label">Current Image</label><br>
-            <img th:src="@{'/uploads/images/' + ${product.image}}"
+            <img th:src="${product.image}"
                  width="150"
                  class="img-thumbnail">
         </div>
