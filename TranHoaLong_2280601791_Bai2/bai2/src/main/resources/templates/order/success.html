@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="fragment/_layout">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Order Success</title>
+</head>
+
+<body>
+
+<div layout:fragment="content" class="container text-center">
+  <div class="alert alert-success mt-5">
+    <h2>🎉 Order Successful! 🎉</h2>
+    <p>Thank you for your order!</p>
+    <p>Order ID: <strong th:text="${order.id}"></strong></p>
+    <p>Total Amount: <strong th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')}"></strong> VNĐ</p>
+    <a th:href="@{/products}" class="btn btn-primary">Continue Shopping</a>
+    <a th:href="@{/order/detail/{id}(id=${order.id})}" class="btn btn-info">View Order Details</a>
+  </div>
+</div>
+
+</body>
+</html>

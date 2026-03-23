@@ -20,9 +20,17 @@
             Products
         </a>
 
-        <a class="nav-link text-light" th:href="@{/products}">
-            Home
-        </a>
+        <div class="d-flex">
+            <!-- Form tìm kiếm đã được tích hợp -->
+            <form class="d-flex me-3" th:action="@{/products/search}" method="get">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="key">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+
+            <a class="nav-link text-light" th:href="@{/products}">
+                Home
+            </a>
+        </div>
     </div>
 </nav>
 
